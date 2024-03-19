@@ -5,6 +5,7 @@ int cont = 0;
 int cont2 = 500;
 int periodo = 100;
 bool t = false;
+bool bandera = false;
 unsigned long tiempoAnterior = 0;
 
 void setup() {
@@ -12,10 +13,17 @@ void setup() {
   pinMode(BOTON1, INPUT_PULLUP);
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(9600);
-  attachInterrupt(digitalPinToInterrupt(BOTON), Incremento, LOW);// esta funcion nos sirve para interrumpir el codigo cada vez que se detecte un cambio en el boton llamando a la funcion incremento cuando sea un flanco de bajada
+  attachInterrupt(digitalPinToInterrupt(BOTON), Incremento, FALLING);// esta funcion nos sirve para interrumpir el codigo cada vez que se detecte un cambio en el boton llamando a la funcion incremento cuando sea un flanco de bajada
   attachInterrupt(digitalPinToInterrupt(BOTON1), Reinicio, FALLING);
 }
 void loop() {
+  if(bandera){
+    if(digitalRead(BOTON)==0){
+      if(millis()-tiempoAnterior>=3000){
+        cont = 0;
+      }
+    }
+  }
   digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
   delay(cont2);                      // wait for a second
   digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW    delay(cont2);
@@ -25,26 +33,25 @@ void loop() {
 }
 void Incremento()
 {
-  
   unsigned long tiempoActual = millis();
-  Serial.println(tiempoAnterior);
   if (tiempoActual - tiempoAnterior > periodo) {
-    cont = cont +1;
-    tiempoAnterior = tiempoActual;
-  }else if(tiempoActual - tiempoAnterior >= 3000){
-    cont = 0;
-    tiempoAnterior = tiempoActual;
+    if(digitalRead(BOTON)==0){
+      cont = cont +1;
+      bandera=true;
+      tiempoAnterior = tiempoActual;
   }
-  
+}
 }
 
 void Reinicio()
 {
   unsigned long tiempoActual = millis();
+  
   if (tiempoActual - tiempoAnterior > periodo) {
-    cont = 0;
-    EstadoLed();
-    tiempoAnterior = tiempoActual;
+      cont = 0;
+      EstadoLed();
+      tiempoAnterior = tiempoActual;
+    
   }
 }
 void EstadoLed()//funcion para determinar el tiempo de parpadeo del led

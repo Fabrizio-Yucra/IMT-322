@@ -5,6 +5,8 @@ int cont = 0;
 int cont2 = 500;
 int periodo = 100;
 bool t = false;
+bool bandera = false;
+bool bandera2 = false;
 unsigned long tiempoAnterior = 0;
 
 void setup() {
@@ -16,6 +18,20 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(BOTON1), Reinicio, FALLING);
 }
 void loop() {
+  if(bandera){
+    if(digitalRead(BOTON)==0){
+      if(millis()-tiempoAnterior>=3000){
+        cont = 0;
+      }
+    }
+  }
+  if(bandera2){
+    if(digitalRead(BOTON1)==0){
+      if(millis()-tiempoAnterior>=3000){
+        EstadoLed();
+      }
+    }
+  }
   digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
   delay(cont2);                      // wait for a second
   digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW    delay(cont2);
@@ -27,10 +43,12 @@ void Incremento()
 {
   unsigned long tiempoActual = millis();
   if (tiempoActual - tiempoAnterior > periodo) {
+    if(digitalRead(BOTON)==0){
       cont = cont +1;
+      bandera=true;
       tiempoAnterior = tiempoActual;
   }
-
+}
 }
 
 void Reinicio()
@@ -38,9 +56,11 @@ void Reinicio()
   unsigned long tiempoActual = millis();
   
   if (tiempoActual - tiempoAnterior > periodo) {
-    cont = 0;
-    EstadoLed();
-    tiempoAnterior = tiempoActual;
+    if(digitalRead(BOTON1)==0){
+      cont--;
+      bandera2 = true;
+      tiempoAnterior = tiempoActual;
+    }
   }
 }
 void EstadoLed()//funcion para determinar el tiempo de parpadeo del led
