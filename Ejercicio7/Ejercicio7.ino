@@ -12,7 +12,7 @@ void setup() {
   pinMode(BOTON1, INPUT_PULLUP);
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(9600);
-  attachInterrupt(digitalPinToInterrupt(BOTON), Incremento, FALLING);// esta funcion nos sirve para interrumpir el codigo cada vez que se detecte un cambio en el boton llamando a la funcion incremento cuando sea un flanco de bajada
+  attachInterrupt(digitalPinToInterrupt(BOTON), Incremento, LOW);// esta funcion nos sirve para interrumpir el codigo cada vez que se detecte un cambio en el boton llamando a la funcion incremento cuando sea un flanco de bajada
   attachInterrupt(digitalPinToInterrupt(BOTON1), Reinicio, FALLING);
 }
 void loop() {
@@ -25,20 +25,22 @@ void loop() {
 }
 void Incremento()
 {
+  
   unsigned long tiempoActual = millis();
+  Serial.println(tiempoAnterior);
   if (tiempoActual - tiempoAnterior > periodo) {
     cont = cont +1;
     tiempoAnterior = tiempoActual;
-    if(tiempoActual - tiempoAnterior >= 3000){
-      cont = 0;
-    }
+  }else if(tiempoActual - tiempoAnterior >= 3000){
+    cont = 0;
+    tiempoAnterior = tiempoActual;
   }
+  
 }
 
 void Reinicio()
 {
   unsigned long tiempoActual = millis();
-  
   if (tiempoActual - tiempoAnterior > periodo) {
     cont = 0;
     EstadoLed();
