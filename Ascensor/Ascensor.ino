@@ -10,14 +10,21 @@ ascensor nivel = Piso1;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-
+  Serial.print("El ascensor esta en el piso: ");
+  Serial.println(nivel);
+  Serial.println("Aque piso quieres ir? ");
+  Serial.println("");
 }
 
 void loop() {
-  Serial.print("El ascensor esta en el piso: ");
-  Serial.println(nivel);
-  opcion = Serial.read();
-  delay(1000);
+  if (Serial.available() > 0){
+    Serial.print("El ascensor esta en el piso: ");
+    Serial.println(nivel);
+    Serial.println("Aque piso quieres ir? ");
+    Serial.println("");
+    opcion = Serial.read();
+    delay(1000);
+  }
   
   switch (nivel){
     case Piso1:
@@ -26,10 +33,12 @@ void loop() {
        }
        if(opcion == '2'){
         Serial.println("Subiendo....");
+        delay(1000);
         nivel = Piso2;
        }
        if(opcion == '3'){
         Serial.println("Subiendo....");
+        delay(1000);
         nivel = Piso3;
        }
     break;
@@ -37,6 +46,7 @@ void loop() {
     case Piso2:
        if(opcion == '1'){
         Serial.println("bajando....");
+        delay(1000);
         nivel = Piso1;
        }
        if(opcion == '2'){
@@ -44,6 +54,7 @@ void loop() {
        }
        if(opcion == '3'){
         Serial.println("Subiendo....");
+        delay(1000);
         nivel = Piso3;
        }
     break;
@@ -51,10 +62,12 @@ void loop() {
     case Piso3:
        if(opcion == '1'){
         Serial.println("bajando....");
+        delay(1000);
         nivel = Piso1;
        }
        if(opcion == '2'){
         Serial.println("bajando....");
+        delay(1000);
         nivel = Piso2;
        }
        if(opcion == '3'){
